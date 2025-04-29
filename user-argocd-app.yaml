@@ -1,19 +1,43 @@
+#apiVersion: argoproj.io/v1alpha1
+#kind: Application
+#metadata:
+#  name: user-service
+#  namespace: argocd
+#spec:
+#  project: default
+#  source:
+#    repoURL: https://github.com/aseongjun99/devops-demo
+#    targetRevision: HEAD
+#    path: helm-chart/user-service  # Chart.yaml 있는 위치
+#  destination:
+#    server: https://kubernetes.default.svc
+#    namespace: user-service
+#  syncPolicy:
+#    automated:
+#      prune: true       # 불필요한 리소스 제거
+#      selfHeal: true    # 드리프트 수정
+
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: user-service
   namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: user-service=aseongjun/user-service
+    argocd-image-updater.argoproj.io/user-service.update-strategy: newest-build
+    argocd-image-updater.argoproj.io/user-service.helm.image-name: image.repository
+    argocd-image-updater.argoproj.io/user-service.helm.image-tag: image.tag
+    argocd-image-updater.argoproj.io/write-back-method: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/aseongjun99/devops-demo
     targetRevision: HEAD
-    path: helm-chart/user-service  # Chart.yaml 있는 위치
+    path: helm-chart/user-service
   destination:
     server: https://kubernetes.default.svc
     namespace: user-service
   syncPolicy:
     automated:
-      prune: true       # 불필요한 리소스 제거
-      selfHeal: true    # 드리프트 수정
-
+      prune: true
+      selfHeal: true
