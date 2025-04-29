@@ -1,0 +1,78 @@
+# MongoDB Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+  namespace: job-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: "{{ .Values.mongodb.image.repository }}:{{ .Values.mongodb.image.tag }}"
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: "{{ .Values.mongodb.mongodbUser }}"
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: "{{ .Values.mongodb.mongodbPassword }}"
+            - name: MONGO_INITDB_DATABASE
+              value: "{{ .Values.mongodb.mongodbDatabase }}"
+          ports:
+            - containerPort: 27017
+
+---
+# Airflow Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow
+  namespace: job-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow
+  template:
+    metadata:
+      labels:
+        app: airflow
+    spec:
+      containers:
+        - name: airflow
+          image: "{{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}"
+          env:
+            - name: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+              value: "postgresql+psycopg2://{{ .Values.airflow.airflowUser }}:{{ .Values.airflow.airflowPassword }}@postgres:5432/{{ .Values.airflow.airflowDatabase }}"
+          ports:
+            - containerPort: 8080
+
+---
+# FastAPI Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi
+  namespace: job-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi
+  template:
+    metadata:
+      labels:
+        app: fastapi
+    spec:
+      containers:
+        - name: fastapi
+          image: "{{ .Values.fastapi.image.repository }}:{{ .Values.fastapi.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.fastapi.servicePort }}
+

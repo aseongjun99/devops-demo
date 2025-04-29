@@ -1,0 +1,41 @@
+# MongoDB Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+  namespace: job-service
+spec:
+  selector:
+    app: mongodb
+  ports:
+    - port: 27017
+      targetPort: 27017
+
+---
+# Airflow Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: airflow
+  namespace: job-service
+spec:
+  selector:
+    app: airflow
+  ports:
+    - port: 8080
+      targetPort: 8080
+
+---
+# FastAPI Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi
+  namespace: job-service
+spec:
+  selector:
+    app: fastapi
+  ports:
+    - port: 80
+      targetPort: 80
+

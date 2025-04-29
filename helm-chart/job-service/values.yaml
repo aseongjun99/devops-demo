@@ -1,0 +1,28 @@
+replicaCount: 1
+
+image:
+  repository: aseongjun
+  tag: latest
+  pullPolicy: IfNotPresent
+
+mongodb:
+  image:
+    repository: mongo
+    tag: "4.4"
+  mongodbUser: admin
+  mongodbPassword: password
+  mongodbDatabase: jobdb
+
+airflow:
+  image:
+    repository: apache/airflow
+    tag: 2.0.1
+  airflowUser: airflow
+  airflowPassword: airflow
+  airflowDatabase: airflow_db
+
+fastapi:
+  image:
+    repository: aseongjun/fastapi-job
+    tag: latest
+
